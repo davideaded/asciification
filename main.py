@@ -3,20 +3,42 @@ from PIL import Image, ImageEnhance
 import math, sys, shutil
 
 ACCEPTABLE_FORMATS = ("jpeg", "jpg", "webp")
+FLAGS = (
+        {
+            "short": "-h",
+            "full": "--help",
+            "description": "Display this help",
+        },
+        {
+            "short": "-d",
+            "full": "--dd",
+            "description": "Testano bagui doido kkkkkkkkkk",
+
+        }
+    )
+
 
 if len(sys.argv) < 2:
-    print(f"[ERROR] {len(sys.argv)} arguments passed. Usage: {sys.argv[0]} <file>")
+    print(f"[ERROR] {len(sys.argv)} arguments passed. Usage: {sys.argv[0]} [OPTION] FILE")
     sys.exit(1)
 
-format = sys.argv[1].split(".")[-1].lower()
-if not format in ACCEPTABLE_FORMATS:
+flags = []
+filename = None
+for arg in sys.argv[1:]:
+    if arg.startswith("-"):
+        flags.append(arg)
+    else:
+        filename = arg
+print("[DEBUG] ", flags, filename)
+
+if filename and not filename.split(".")[-1] in ACCEPTABLE_FORMATS:
     print(f"[ERRO] Format {format} still not supported")
     sys.exit(1)
 
-def debug_img(img):
-    print(f"DEBUGGING {img.filename}")
-    print(f"IMG MODE:{img.mode}")
-    print(f"IMG FORMAT:{img.format}")
+def help():
+    print(f"Usage: {sys.argv[0]} [OPTION] FILE\n")
+    for flag in FLAGS:
+        print(f"{flag['short']}, {flag['full']}\t{flag['description']}")
 
 def resize_img(img, max_width):
     aspect_ratio = img.height / img.width
@@ -60,6 +82,5 @@ def print_ascii(filename, max_width=100):
     for line in ascii_art:
         print(line)
 
-filename = sys.argv[1]
 terminal_width = shutil.get_terminal_size()[0]
 print_ascii(filename, terminal_width // 2)

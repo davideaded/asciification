@@ -2,7 +2,7 @@
 from PIL import Image, ImageEnhance, ImageFilter
 import math, sys, shutil
 
-ACCEPTABLE_FORMATS = ("jpeg", "jpg", "webp")
+ACCEPTABLE_FORMATS = ("jpeg", "jpg", "webp", "png")
 FLAGS = (
         {
             "short": "-h",
@@ -13,7 +13,7 @@ FLAGS = (
         {
             "short": "-c",
             "full": "--contrast",
-            "description": "Double image contrast",
+            "description": "Increase image contrast by 2.5",
             "name": "contrast",
         },
         {
@@ -72,6 +72,8 @@ def handle_flags(im, p_flags):
 def get_image_pixels(filename, max_width, p_flags):
     try:
         with Image.open(filename) as im:
+            if filename[-3:].lower() == "png":
+                im = im.convert("RGBA")
             im = resize_img(im, max_width)
             im = handle_flags(im, p_flags)
             im = im.convert("L")

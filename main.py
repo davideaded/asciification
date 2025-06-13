@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageFilter
 import math, sys, shutil
 
 ACCEPTABLE_FORMATS = ("jpeg", "jpg", "webp")
@@ -50,12 +50,12 @@ def resize_img(img, max_width):
 def get_grayscale_from_img(filename, max_width):
     try:
         with Image.open(filename) as im:
-            debug_img(im)
             im = resize_img(im, max_width)
             im = im.convert("L")
 
-            pixels = list(im.getdata())
             width, height = im.size
+            # im = im.filter(ImageFilter.GaussianBlur(1))
+            pixels = list(im.getdata())
 
             return pixels, width, height
 
@@ -76,11 +76,11 @@ def print_ascii(filename, max_width=100):
         line = ""
         for x in range(w):
             px_value = gs[y * w + x]
-            line += shades[px_value * len(shades) // 256]
-        ascii_art.append(line + "\n")
+            index = px_value * (len(shades) - 1) // 255
+            line += shades[index]
+        ascii_art.append(line)
 
-    for line in ascii_art:
-        print(line)
+    print("\n".join(ascii_art))
 
 terminal_width = shutil.get_terminal_size()[0]
-print_ascii(filename, terminal_width // 2)
+print_ascii(filename, terminal_width)

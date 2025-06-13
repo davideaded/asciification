@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 from PIL import Image, ImageEnhance, ImageFilter
 import math, sys, shutil
 
@@ -21,7 +20,7 @@ FLAGS = (
             "full": "--brightness",
             "description": "Increase image brightness by 2.5",
             "name": "brightness",
-        }
+        },
     )
 
 
@@ -74,11 +73,11 @@ def get_image_pixels(filename, max_width, p_flags):
         with Image.open(filename) as im:
             if filename[-3:].lower() == "png":
                 im = im.convert("RGBA")
-            im = resize_img(im, max_width)
             im = handle_flags(im, p_flags)
+            im = resize_img(im, max_width)
             im = im.convert("L")
-
             width, height = im.size
+
             pixels = list(im.getdata())
 
             return pixels, width, height
